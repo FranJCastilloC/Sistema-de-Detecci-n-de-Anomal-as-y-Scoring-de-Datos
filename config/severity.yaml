@@ -1,0 +1,80 @@
+# How a rule failure becomes a severity. Impact is the intrinsic seriousness of
+# the rule family; extent and confidence are computed from the data.
+bands:
+  critical: 75
+  high: 50
+  medium: 25
+
+weights:
+  impact: 0.45
+  extent: 0.30
+  confidence: 0.25
+
+# Rule families that are always critical regardless of how few rows they touch.
+always_critical:
+  - expect_primary_key_to_be_unique
+
+actions:
+  expect_column_to_exist: >
+    Restore the missing column in the extract, or update the expectation profile
+    if the schema change was intentional.
+  expect_column_values_to_not_be_null: >
+    Trace the null rows back to the source system and make the field mandatory at
+    entry; quarantine affected records until the value is supplied.
+  expect_column_values_to_be_of_type: >
+    Fix the export locale or column typing at the source; values arriving as text
+    will not aggregate and will silently drop out of downstream sums.
+  expect_column_values_to_be_between: >
+    Reject the out-of-range values at ingestion and add a bounds check to the
+    source form; review whether a sign or unit error is involved.
+  expect_column_dates_to_be_between: >
+    Investigate the date entries outside the plausible window; these usually
+    indicate a manual typo or a timezone/format conversion fault.
+  expect_column_values_to_be_in_set: >
+    Map the free-text variants onto the controlled vocabulary and lock the field
+    down to a picklist at the source.
+  expect_column_values_to_match_regex: >
+    Correct the malformed identifiers; a format breach here breaks joins against
+    every downstream master table.
+  expect_table_rows_to_be_unique: >
+    De-duplicate the batch and add a load-level uniqueness constraint; repeated
+    rows will double-count in every aggregate.
+  expect_primary_key_to_be_unique: >
+    Stop the load. A duplicated key makes the batch unusable for any join or
+    aggregation until the conflicting records are reconciled.
+  expect_column_values_to_be_unique: >
+    Reconcile the duplicated values before they are used as a join key.
+  consistency: >
+    Reconcile the related fields; one of them is wrong and downstream logic
+    cannot tell which.
+  expect_column_values_to_be_plausible: >
+    Review the flagged values manually. These are statistical outliers, not
+    confirmed errors, and some will be legitimate extremes.
+  anomaly: >
+    Route to manual review. The record is unlike the transactions the model was
+    trained on; confirm it before it is processed automatically.
+
+rule_actions:
+  net_value_matches_quantity_times_price: >
+    Recompute net value from quantity times unit price, or correct whichever of
+    the three fields was mis-keyed. Invoice matching will fail on these lines.
+  material_id_exists_in_material_master: >
+    Create the missing material master records or correct the references; these
+    lines cannot be received or invoiced as they stand.
+  po_id_exists_in_purchase_orders: >
+    Restore the missing purchase order headers; these orphan lines will be
+    dropped by any header-driven report.
+  uom_matches_material_master: >
+    Align the line unit of measure with the material master, or convert the
+    quantity. A unit mismatch silently corrupts every quantity aggregate.
+  delivery_date_after_order_date: >
+    Correct the delivery dates that precede their order date; lead-time and
+    on-time-delivery metrics are unusable for these orders.
+  vendor_id_exists_in_vendor_master: >
+    Create or correct the vendor master records before the payment run.
+  receipt_not_greater_than_order: >
+    Investigate over-delivery: either the receipt was posted against the wrong
+    line or the order quantity was reduced after the fact.
+  invoice_not_greater_than_receipt: >
+    Block the invoice. Quantity invoiced exceeds quantity received, which is the
+    classic over-billing pattern.

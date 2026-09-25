@@ -1,0 +1,15 @@
+table,defect_code,injected,detected,recall
+materials,ENCODING_NOISE,50,50,1.0
+materials,OUT_OF_RANGE_PRICE,15,8,0.5333
+po_lines,ARITHMETIC_INCONSISTENCY,807,791,0.9802
+po_lines,BROKEN_FK,359,359,1.0
+po_lines,INVALID_UOM,717,715,0.9972
+po_lines,MISSING_CRITICAL,1076,1076,1.0
+po_lines,NEGATIVE_QUANTITY,359,359,1.0
+po_lines,TYPE_MISMATCH,448,448,1.0
+po_lines,ZERO_PRICE,538,538,1.0
+purchase_orders,DATE_ORDER_VIOLATION,141,141,1.0
+purchase_orders,DUPLICATE_ROW,100,100,1.0
+purchase_orders,FUTURE_DATE,40,40,1.0
+vendors,INVALID_CATEGORY,6,6,1.0
+vendors,MISSING_OPTIONAL,9,9,1.0

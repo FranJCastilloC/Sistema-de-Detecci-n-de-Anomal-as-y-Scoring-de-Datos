@@ -1,0 +1,35 @@
+# Core data stack
+numpy
+pandas
+pyarrow
+scipy
+scikit-learn
+
+# Deep learning (autoencoder)
+torch
+
+# Synthetic ERP data
+faker
+
+# Config / CLI
+pydantic
+pyyaml
+typer
+
+# Reporting & visualisation
+matplotlib
+plotly
+
+# Demo app
+streamlit
+
+# Notebooks
+jupyterlab
+nbconvert
+ipykernel
+
+# Tests
+pytest
+
+# Markdown table rendering for results/
+tabulate

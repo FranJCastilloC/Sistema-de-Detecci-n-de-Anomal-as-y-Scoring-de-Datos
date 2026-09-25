@@ -1,0 +1,63 @@
+name: erp_purchase_orders
+description: Purchase order headers extracted from the ERP.
+primary_key: [po_id]
+
+outlier_columns: [total_net_value]
+outlier_cut: 4.5
+
+columns:
+  - name: po_id
+    dtype: string
+    required: true
+    unique: true
+    regex: "PO-[0-9]{10}"
+    weight: 2.0
+  - name: vendor_id
+    dtype: string
+    required: true
+    regex: "VEN-[0-9]{5}"
+    weight: 1.5
+  - name: order_date
+    dtype: datetime
+    required: true
+    min_date: "2020-01-01"
+    max_date: "today"
+    weight: 1.5
+    description: Orders must not be dated in the future
+  - name: delivery_date
+    dtype: datetime
+    required: true
+    min_date: "2020-01-01"
+  - name: currency
+    dtype: string
+    required: true
+    allowed_values: [EUR, USD, GBP, MXN]
+  - name: plant
+    dtype: string
+    required: true
+    allowed_values: ["1000", "1100", "2000", "3000"]
+  - name: created_by
+    dtype: string
+    required: true
+  - name: status
+    dtype: string
+    required: true
+    allowed_values: [OPEN, PARTIAL, CLOSED, CANCELLED]
+  - name: total_net_value
+    dtype: float
+    required: true
+    min: 0.0
+
+cross_field_rules:
+  - id: delivery_date_after_order_date
+    kind: expression
+    expression: "delivery_date >= order_date"
+    description: Delivery date must not precede the order date
+    impact: 0.8
+  - id: vendor_id_exists_in_vendor_master
+    kind: foreign_key
+    column: vendor_id
+    ref_table: vendors
+    ref_column: vendor_id
+    description: Every order must reference an existing vendor
+    impact: 0.95

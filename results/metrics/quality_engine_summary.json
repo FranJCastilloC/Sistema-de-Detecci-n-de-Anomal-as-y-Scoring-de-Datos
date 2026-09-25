@@ -1,0 +1,58 @@
+{
+  "tables": {
+    "po_lines": {
+      "global_score": 99.77,
+      "global_score_arithmetic": 99.77,
+      "grade": "A",
+      "dimensions": {
+        "completeness": 0.998588,
+        "validity": 0.998861,
+        "consistency": 0.994171,
+        "uniqueness": 1.0,
+        "plausibility": 0.996562
+      }
+    },
+    "purchase_orders": {
+      "global_score": 99.74,
+      "global_score_arithmetic": 99.74,
+      "grade": "F",
+      "dimensions": {
+        "completeness": 1.0,
+        "validity": 0.999779,
+        "consistency": 0.995498,
+        "uniqueness": 0.991065,
+        "plausibility": 0.998209
+      }
+    },
+    "vendors": {
+      "global_score": 99.75,
+      "global_score_arithmetic": 99.75,
+      "grade": "A",
+      "dimensions": {
+        "completeness": 0.997,
+        "validity": 0.996471,
+        "consistency": 1.0,
+        "uniqueness": 1.0,
+        "plausibility": 1.0
+      }
+    },
+    "materials": {
+      "global_score": 99.95,
+      "global_score_arithmetic": 99.95,
+      "grade": "A",
+      "dimensions": {
+        "completeness": 1.0,
+        "validity": 0.998966,
+        "consistency": 1.0,
+        "uniqueness": 1.0,
+        "plausibility": 0.9991
+      }
+    }
+  },
+  "defects_injected": 4665,
+  "defects_detected": 4640,
+  "overall_recall": 0.9946,
+  "deterministic_rule_precision": 1.0,
+  "families_at_full_recall": 11,
+  "n_families": 14
+}

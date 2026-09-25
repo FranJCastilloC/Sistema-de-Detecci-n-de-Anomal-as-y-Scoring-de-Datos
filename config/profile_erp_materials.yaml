@@ -1,0 +1,51 @@
+name: erp_materials
+description: Material master data.
+primary_key: [material_id]
+
+outlier_columns: [standard_price, safety_stock]
+outlier_cut: 4.0
+
+columns:
+  - name: material_id
+    dtype: string
+    required: true
+    unique: true
+    regex: "MAT-[0-9]{6}"
+    weight: 2.0
+  - name: description
+    dtype: string
+    required: true
+    regex: "[A-Z0-9][A-Z0-9 /.-]*[A-Z0-9]"
+    weight: 1.5
+    description: Uppercase ASCII only; mis-decoded characters break downstream search
+  - name: material_group
+    dtype: string
+    required: true
+  - name: base_uom
+    dtype: string
+    required: true
+    allowed_values: [EA, KG, L, M, BOX]
+  - name: standard_price
+    dtype: float
+    required: true
+    min: 0.01
+    weight: 1.5
+  - name: currency
+    dtype: string
+    required: true
+    allowed_values: [EUR, USD, GBP, MXN]
+  - name: plant
+    dtype: string
+    required: true
+    allowed_values: ["1000", "1100", "2000", "3000"]
+  - name: safety_stock
+    dtype: int
+    required: true
+    min: 0
+  - name: is_active
+    dtype: bool
+    required: true
+  - name: created_at
+    dtype: datetime
+    required: true
+    max_date: "today"

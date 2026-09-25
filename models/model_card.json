@@ -1,0 +1,69 @@
+{
+  "trained_on": "ULB credit card fraud, temporal train window, normal rows only",
+  "n_train_rows": 170524,
+  "features": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15",
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21",
+    "V22",
+    "V23",
+    "V24",
+    "V25",
+    "V26",
+    "V27",
+    "V28",
+    "log_amount",
+    "hour_sin",
+    "hour_cos"
+  ],
+  "autoencoder": {
+    "best_epoch": 149,
+    "config": {
+      "input_dim": 31,
+      "hidden": [
+        24,
+        16
+      ],
+      "latent": 8,
+      "dropout": 0.0,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 2048,
+      "max_epochs": 150,
+      "patience": 12,
+      "min_delta": 1e-05,
+      "val_fraction": 0.1,
+      "seed": 42,
+      "num_threads": 4
+    }
+  },
+  "review_budget": 0.005,
+  "headline_metrics": {
+    "pr_auc": 0.2873428655688308,
+    "roc_auc": 0.9203972788158983,
+    "precision": 0.2523364485981308,
+    "recall": 0.72,
+    "f1": 0.3737024221453287,
+    "alerts": 214
+  },
+  "seed": 42,
+  "determinism_note": "Reproducible for a fixed torch thread count (4); float reduction order changes with thread count."
+}

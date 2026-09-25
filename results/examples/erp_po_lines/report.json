@@ -1,0 +1,364 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "erp-po-lines-2024Q4",
+  "table": "erp_po_lines",
+  "n_rows": 89649,
+  "generated_at": "2026-09-18T17:23:23+00:00",
+  "quality": {
+    "table": "erp_po_lines",
+    "n_rows": 89649,
+    "n_columns": 12,
+    "global_score": 99.77,
+    "global_score_arithmetic": 99.77,
+    "grade": "A",
+    "profile_inferred": false,
+    "generated_at": "2026-09-18T17:23:23+00:00",
+    "dimensions": {
+      "completeness": {
+        "score": 99.86,
+        "weight": 0.25,
+        "rules_evaluated": 12,
+        "rules_failed": 1
+      },
+      "validity": {
+        "score": 99.89,
+        "weight": 0.25,
+        "rules_evaluated": 19,
+        "rules_failed": 3
+      },
+      "consistency": {
+        "score": 99.42,
+        "weight": 0.2,
+        "rules_evaluated": 6,
+        "rules_failed": 4
+      },
+      "uniqueness": {
+        "score": 100.0,
+        "weight": 0.15,
+        "rules_evaluated": 3,
+        "rules_failed": 0
+      },
+      "plausibility": {
+        "score": 99.66,
+        "weight": 0.15,
+        "rules_evaluated": 3,
+        "rules_failed": 3
+      }
+    }
+  },
+  "anomaly": {},
+  "severity_counts": {
+    "critical": 0,
+    "high": 6,
+    "medium": 2,
+    "low": 1
+  },
+  "n_issues": 9,
+  "issues": [
+    {
+      "issue_id": "ISS-Q0040",
+      "priority": 1,
+      "severity": "high",
+      "severity_score": 68.79,
+      "source": "quality_rule",
+      "dimension": "completeness",
+      "rule_id": "expect_column_values_to_not_be_null.unit_price",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "unit_price",
+      "n_records": 1076,
+      "pct_affected": 0.012002,
+      "reason": "'unit_price' is 1.20% null (tolerance 0.00%). 1,076 of 89,649 rows checked failed (1.20%).",
+      "recommended_action": "Trace the null rows back to the source system and make the field mandatory at entry; quarantine affected records until the value is supplied.",
+      "record_keys": [
+        "POL-0000184",
+        "POL-0000341",
+        "POL-0000347",
+        "POL-0000390",
+        "POL-0000573",
+        "POL-0000620",
+        "POL-0000646",
+        "POL-0000769",
+        "POL-0000969",
+        "POL-0001002"
+      ],
+      "evidence": {
+        "rule_score": 0.987998,
+        "null_rate": 0.012002364778190498,
+        "tolerance": 0.0
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0013",
+      "priority": 2,
+      "severity": "high",
+      "severity_score": 61.09,
+      "source": "quality_rule",
+      "dimension": "validity",
+      "rule_id": "expect_column_values_to_be_between.unit_price",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "unit_price",
+      "n_records": 538,
+      "pct_affected": 0.006074,
+      "reason": "'unit_price' must fall within [0.01, None]. 538 of 88,573 rows checked failed (0.61%).",
+      "recommended_action": "Reject the out-of-range values at ingestion and add a bounds check to the source form; review whether a sign or unit error is involved.",
+      "record_keys": [
+        "POL-0000273",
+        "POL-0000614",
+        "POL-0001160",
+        "POL-0001402",
+        "POL-0001470",
+        "POL-0001495",
+        "POL-0001654",
+        "POL-0001868",
+        "POL-0002026",
+        "POL-0002259"
+      ],
+      "evidence": {
+        "rule_score": 0.993926,
+        "min": 0.01,
+        "max": null
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0012",
+      "priority": 3,
+      "severity": "high",
+      "severity_score": 60.65,
+      "source": "quality_rule",
+      "dimension": "validity",
+      "rule_id": "expect_column_values_to_be_between.quantity",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "quantity",
+      "n_records": 359,
+      "pct_affected": 0.004025,
+      "reason": "'quantity' must fall within [0.01, None]. 359 of 89,201 rows checked failed (0.40%).",
+      "recommended_action": "Reject the out-of-range values at ingestion and add a bounds check to the source form; review whether a sign or unit error is involved.",
+      "record_keys": [
+        "POL-0000577",
+        "POL-0000715",
+        "POL-0000794",
+        "POL-0001389",
+        "POL-0001478",
+        "POL-0002190",
+        "POL-0002202",
+        "POL-0002497",
+        "POL-0002642",
+        "POL-0002793"
+      ],
+      "evidence": {
+        "rule_score": 0.995975,
+        "min": 0.01,
+        "max": null
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0021",
+      "priority": 4,
+      "severity": "high",
+      "severity_score": 58.62,
+      "source": "quality_rule",
+      "dimension": "validity",
+      "rule_id": "expect_column_values_to_be_of_type.quantity",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "quantity",
+      "n_records": 448,
+      "pct_affected": 0.004997,
+      "reason": "'quantity' must parse as float. 448 of 89,649 rows checked failed (0.50%).",
+      "recommended_action": "Fix the export locale or column typing at the source; values arriving as text will not aggregate and will silently drop out of downstream sums.",
+      "record_keys": [
+        "POL-0000016",
+        "POL-0000069",
+        "POL-0000301",
+        "POL-0000939",
+        "POL-0001006",
+        "POL-0001008",
+        "POL-0001033",
+        "POL-0001284",
+        "POL-0001322",
+        "POL-0001430"
+      ],
+      "evidence": {
+        "rule_score": 0.995003,
+        "expected_dtype": "float"
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0002",
+      "priority": 5,
+      "severity": "high",
+      "severity_score": 55.72,
+      "source": "quality_rule",
+      "dimension": "consistency",
+      "rule_id": "consistency.material_id_exists_in_material_master",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "material_id",
+      "n_records": 359,
+      "pct_affected": 0.004005,
+      "reason": "Every line must reference a material that exists in the master. 359 of 89,649 rows checked failed (0.40%).",
+      "recommended_action": "Create the missing material master records or correct the references; these lines cannot be received or invoiced as they stand.",
+      "record_keys": [
+        "POL-0000311",
+        "POL-0000716",
+        "POL-0001043",
+        "POL-0001131",
+        "POL-0001299",
+        "POL-0001354",
+        "POL-0002094",
+        "POL-0002599",
+        "POL-0002686",
+        "POL-0002951"
+      ],
+      "evidence": {
+        "rule_score": 0.995995,
+        "ref_table": "materials",
+        "ref_column": "material_id"
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0003",
+      "priority": 6,
+      "severity": "high",
+      "severity_score": 53.9,
+      "source": "quality_rule",
+      "dimension": "consistency",
+      "rule_id": "consistency.net_value_matches_quantity_times_price",
+      "scope": "dataset",
+      "table": "erp_po_lines",
+      "column": null,
+      "n_records": 1669,
+      "pct_affected": 0.018938,
+      "reason": "Net value must equal ordered quantity times unit price. 1,669 of 88,129 rows checked failed (1.89%).",
+      "recommended_action": "Recompute net value from quantity times unit price, or correct whichever of the three fields was mis-keyed. Invoice matching will fail on these lines.",
+      "record_keys": [
+        "POL-0000207",
+        "POL-0000256",
+        "POL-0000273",
+        "POL-0000449",
+        "POL-0000488",
+        "POL-0000559",
+        "POL-0000577",
+        "POL-0000610",
+        "POL-0000614",
+        "POL-0000625"
+      ],
+      "evidence": {
+        "rule_score": 0.981062,
+        "expression": "abs(net_value - quantity * unit_price) <= 0.01 + 0.005 * abs(net_value)"
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0006",
+      "priority": 7,
+      "severity": "medium",
+      "severity_score": 47.35,
+      "source": "quality_rule",
+      "dimension": "consistency",
+      "rule_id": "consistency.uom_matches_material_master",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "uom",
+      "n_records": 715,
+      "pct_affected": 0.008008,
+      "reason": "Line unit of measure must match the material master base unit. 715 of 89,290 rows checked failed (0.80%).",
+      "recommended_action": "Align the line unit of measure with the material master, or convert the quantity. A unit mismatch silently corrupts every quantity aggregate.",
+      "record_keys": [
+        "POL-0000248",
+        "POL-0000588",
+        "POL-0000650",
+        "POL-0000807",
+        "POL-0001048",
+        "POL-0001142",
+        "POL-0001224",
+        "POL-0001269",
+        "POL-0001511",
+        "POL-0001525"
+      ],
+      "evidence": {
+        "rule_score": 0.991992,
+        "ref_table": "materials",
+        "ref_column": "base_uom"
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0005",
+      "priority": 8,
+      "severity": "medium",
+      "severity_score": 46.72,
+      "source": "quality_rule",
+      "dimension": "consistency",
+      "rule_id": "consistency.receipt_not_greater_than_order",
+      "scope": "dataset",
+      "table": "erp_po_lines",
+      "column": null,
+      "n_records": 359,
+      "pct_affected": 0.004025,
+      "reason": "Goods receipt cannot exceed the ordered quantity. 359 of 89,201 rows checked failed (0.40%).",
+      "recommended_action": "Investigate over-delivery: either the receipt was posted against the wrong line or the order quantity was reduced after the fact.",
+      "record_keys": [
+        "POL-0000577",
+        "POL-0000715",
+        "POL-0000794",
+        "POL-0001389",
+        "POL-0001478",
+        "POL-0002190",
+        "POL-0002202",
+        "POL-0002497",
+        "POL-0002642",
+        "POL-0002793"
+      ],
+      "evidence": {
+        "rule_score": 0.995975,
+        "expression": "goods_receipt_qty <= quantity + 0.01"
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    },
+    {
+      "issue_id": "ISS-Q0024",
+      "priority": 9,
+      "severity": "low",
+      "severity_score": 20.26,
+      "source": "quality_rule",
+      "dimension": "plausibility",
+      "rule_id": "expect_column_values_to_be_plausible.quantity",
+      "scope": "column",
+      "table": "erp_po_lines",
+      "column": "quantity",
+      "n_records": 905,
+      "pct_affected": 0.010146,
+      "reason": "'quantity' values beyond 4.0 robust standard deviations of the median. 905 of 89,201 rows checked failed (1.01%).",
+      "recommended_action": "Review the flagged values manually. These are statistical outliers, not confirmed errors, and some will be legitimate extremes.",
+      "record_keys": [
+        "POL-0000095",
+        "POL-0000244",
+        "POL-0000249",
+        "POL-0000299",
+        "POL-0000556",
+        "POL-0000766",
+        "POL-0000814",
+        "POL-0000915",
+        "POL-0000984",
+        "POL-0001208"
+      ],
+      "evidence": {
+        "rule_score": 0.989854,
+        "median": 34.82,
+        "robust_scale": 23.454732,
+        "cut": 4.0,
+        "log_scaled": false
+      },
+      "detected_at": "2026-09-18T17:23:23+00:00"
+    }
+  ]
+}

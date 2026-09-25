@@ -1,0 +1,115 @@
+name: erp_po_lines
+description: >
+  Purchase order line items extracted from the ERP. This is the highest-volume
+  transactional table and the one a data quality gate would run on every load.
+primary_key: [po_line_id]
+
+dimension_weights:
+  completeness: 0.25
+  validity: 0.25
+  consistency: 0.20
+  uniqueness: 0.15
+  plausibility: 0.15
+
+outlier_columns: [quantity, unit_price, net_value]
+outlier_cut: 4.0
+
+columns:
+  - name: po_line_id
+    dtype: string
+    required: true
+    unique: true
+    regex: "POL-[0-9]{7}"
+    weight: 2.0
+    description: Surrogate key of the line item
+  - name: po_id
+    dtype: string
+    required: true
+    regex: "PO-[0-9]{10}"
+    weight: 2.0
+  - name: position
+    dtype: int
+    required: true
+    min: 10
+  - name: material_id
+    dtype: string
+    required: true
+    regex: "MAT-[0-9]{6}"
+    weight: 1.5
+  - name: quantity
+    dtype: float
+    required: true
+    min: 0.01
+    weight: 2.0
+    description: Ordered quantity; must be strictly positive
+  - name: uom
+    dtype: string
+    required: true
+    allowed_values: [EA, KG, L, M, BOX]
+  - name: unit_price
+    dtype: float
+    required: true
+    min: 0.01
+    weight: 2.0
+    description: Net price per unit; a zero price blocks invoice matching
+  - name: net_value
+    dtype: float
+    required: true
+    min: 0.0
+    weight: 1.5
+  - name: currency
+    dtype: string
+    required: true
+    allowed_values: [EUR, USD, GBP, MXN]
+  - name: delivery_date
+    dtype: datetime
+    required: true
+    min_date: "2022-01-01"
+  - name: goods_receipt_qty
+    dtype: float
+    required: true
+    min: 0.0
+  - name: invoice_qty
+    dtype: float
+    required: true
+    min: 0.0
+
+cross_field_rules:
+  - id: net_value_matches_quantity_times_price
+    kind: expression
+    expression: "abs(net_value - quantity * unit_price) <= 0.01 + 0.005 * abs(net_value)"
+    description: Net value must equal ordered quantity times unit price
+    impact: 0.85
+  - id: receipt_not_greater_than_order
+    kind: expression
+    expression: "goods_receipt_qty <= quantity + 0.01"
+    description: Goods receipt cannot exceed the ordered quantity
+    impact: 0.7
+  - id: invoice_not_greater_than_receipt
+    kind: expression
+    expression: "invoice_qty <= goods_receipt_qty + 0.01"
+    description: Invoiced quantity cannot exceed what was actually received
+    impact: 0.75
+  - id: material_id_exists_in_material_master
+    kind: foreign_key
+    column: material_id
+    ref_table: materials
+    ref_column: material_id
+    description: Every line must reference a material that exists in the master
+    impact: 0.95
+  - id: po_id_exists_in_purchase_orders
+    kind: foreign_key
+    column: po_id
+    ref_table: purchase_orders
+    ref_column: po_id
+    description: Every line must belong to an existing purchase order header
+    impact: 0.95
+  - id: uom_matches_material_master
+    kind: lookup_match
+    column: uom
+    local_key: material_id
+    ref_table: materials
+    ref_key: material_id
+    ref_column: base_uom
+    description: Line unit of measure must match the material master base unit
+    impact: 0.7

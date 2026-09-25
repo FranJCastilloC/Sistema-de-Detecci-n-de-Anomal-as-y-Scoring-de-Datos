@@ -1,0 +1,41 @@
+name: erp_vendors
+description: Vendor master data.
+primary_key: [vendor_id]
+
+outlier_columns: []
+
+columns:
+  - name: vendor_id
+    dtype: string
+    required: true
+    unique: true
+    regex: "VEN-[0-9]{5}"
+    weight: 2.0
+  - name: vendor_name
+    dtype: string
+    required: true
+    weight: 1.5
+  - name: country_code
+    dtype: string
+    required: true
+    regex: "[A-Z]{2}"
+  - name: tax_id
+    dtype: string
+    required: true
+    description: Required for tax reporting; a blank blocks payment runs
+  - name: payment_terms
+    dtype: string
+    required: true
+    allowed_values: [NET30, NET45, NET60, IMMEDIATE]
+    weight: 1.5
+  - name: currency
+    dtype: string
+    required: true
+    allowed_values: [EUR, USD, GBP, MXN]
+  - name: is_blocked
+    dtype: bool
+    required: true
+  - name: created_at
+    dtype: datetime
+    required: true
+    max_date: "today"
