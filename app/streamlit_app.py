@@ -170,8 +170,16 @@ profile_file = {
     "creditcard_transactions": "profile_creditcard.yaml",
 }.get(table_name)
 
-result = run_audit(frame, table_name, profile_file, review_budget, use_model,
-                   max_issues, label_column, references)
+try:
+    result = run_audit(frame, table_name, profile_file, review_budget, use_model,
+                       max_issues, label_column, references)
+except Exception as exc:  # noqa: BLE001
+    # A hosted deployment that dies here shows only a generic "Oh no" page, so
+    # the failure is surfaced in the app instead of being swallowed.
+    st.error(f"The audit could not be completed: {exc}")
+    st.exception(exc)
+    st.stop()
+
 report = result.report
 quality = result.quality
 
