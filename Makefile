@@ -15,7 +15,7 @@ help:
 
 setup:
 	uv venv --python 3.11
-	uv pip install -r requirements.txt
+	uv pip install -r requirements-dev.txt
 	uv pip install -e .
 	@# macOS can mark .pth files with the BSD hidden flag, and CPython then
 	@# skips them silently, which disables the editable install. Harmless on

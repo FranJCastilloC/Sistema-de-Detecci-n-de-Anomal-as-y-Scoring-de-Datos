@@ -24,6 +24,7 @@ class Paths:
     data_raw: Path = PROJECT_ROOT / "data" / "raw"
     data_processed: Path = PROJECT_ROOT / "data" / "processed"
     data_synthetic: Path = PROJECT_ROOT / "data" / "synthetic"
+    data_samples: Path = PROJECT_ROOT / "data" / "samples"
     models: Path = PROJECT_ROOT / "models"
     results: Path = PROJECT_ROOT / "results"
     metrics: Path = PROJECT_ROOT / "results" / "metrics"
@@ -35,6 +36,7 @@ class Paths:
             "data_raw",
             "data_processed",
             "data_synthetic",
+            "data_samples",
             "models",
             "metrics",
             "figures",

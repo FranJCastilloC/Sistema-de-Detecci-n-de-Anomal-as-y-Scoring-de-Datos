@@ -27,6 +27,11 @@ EXPECTED_FRAUD = 492
 RAW_FILENAME = "dataset_1597.pq"
 PROCESSED_FILENAME = "creditcard.parquet"
 
+#: A small, committed slice of the most recent transactions. The full 73 MB
+#: dataset is too large to track, so this is what the hosted demo scores.
+SAMPLE_FILENAME = "creditcard_sample.parquet"
+SAMPLE_ROWS = 20_000
+
 
 def download_creditcard(dest: Path | None = None, force: bool = False) -> Path:
     """Download the raw dataset, returning the local path.
@@ -87,3 +92,34 @@ def load_table(source, kind: str | None = None) -> pd.DataFrame:
     if kind == "parquet":
         return pd.read_parquet(source)
     return pd.read_csv(source)
+
+
+def write_creditcard_sample(n_rows: int = SAMPLE_ROWS) -> Path:
+    """Carve the most recent transactions out into a committable sample."""
+    frame = load_creditcard()
+    sample = (
+        frame.sort_values("Time", kind="mergesort").tail(n_rows).reset_index(drop=True)
+    )
+    PATHS.data_samples.mkdir(parents=True, exist_ok=True)
+    path = PATHS.data_samples / SAMPLE_FILENAME
+    sample.to_parquet(path, index=False, compression="zstd")
+    return path
+
+
+def load_creditcard_sample() -> pd.DataFrame:
+    """Load the committed demo slice, falling back to the full dataset.
+
+    This is what makes the hosted demo work: the deployment only ever has what
+    is in the repository, and the full dataset is not.
+    """
+    path = PATHS.data_samples / SAMPLE_FILENAME
+    if path.exists():
+        frame = pd.read_parquet(path)
+        frame["Class"] = frame["Class"].astype("int8")
+        return frame
+    frame = load_creditcard()
+    return (
+        frame.sort_values("Time", kind="mergesort")
+        .tail(SAMPLE_ROWS)
+        .reset_index(drop=True)
+    )

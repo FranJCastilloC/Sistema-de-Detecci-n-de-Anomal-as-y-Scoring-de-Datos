@@ -11,6 +11,10 @@ data/raw/*
 data/processed/*
 data/synthetic/*
 !data/**/.gitkeep
+# The small demo slice is tracked on purpose: the hosted app only ever has
+# what the repository contains.
+!data/samples/
+!data/samples/*.parquet
 
 # Trained artifacts (regenerate with `make train`). The autoencoder and its
 # scaler are small enough to track, so the demo app works on a fresh clone

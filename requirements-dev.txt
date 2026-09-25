@@ -1,0 +1,13 @@
+# Development extras, on top of requirements.txt.
+-r requirements.txt
+
+# Tests
+pytest
+
+# Notebooks
+jupyterlab
+nbconvert
+ipykernel
+
+# Optional: reproducible screenshots of the running app (scripts/06_capture_app.py)
+playwright

@@ -1,12 +1,17 @@
-# Core data stack
+# Runtime dependencies: everything needed to run the pipeline and the app.
+# This is also what Streamlit Community Cloud installs, so it must stay lean.
 numpy
 pandas
 pyarrow
 scipy
 scikit-learn
 
-# Deep learning (autoencoder)
-torch
+# Deep learning. On Linux the default PyPI wheel drags in the CUDA runtime
+# (~2.5 GB), which blows past the hosting size limit, so the CPU-only build is
+# pinned there. macOS wheels are CPU-only already.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.0; sys_platform == "darwin"
+torch==2.14.0+cpu; sys_platform == "linux"
 
 # Synthetic ERP data
 faker
@@ -16,20 +21,10 @@ pydantic
 pyyaml
 typer
 
-# Reporting & visualisation
+# Reporting and visualisation
 matplotlib
 plotly
+tabulate
 
 # Demo app
 streamlit
-
-# Notebooks
-jupyterlab
-nbconvert
-ipykernel
-
-# Tests
-pytest
-
-# Markdown table rendering for results/
-tabulate

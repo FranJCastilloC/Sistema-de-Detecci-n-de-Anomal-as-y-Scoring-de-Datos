@@ -19,8 +19,9 @@ if str(PROJECT_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from dq_anomaly.anomaly.artifacts import bundle_available, load_bundle  # noqa: E402
-from dq_anomaly.config import PATHS  # noqa: E402
-from dq_anomaly.data.loaders import load_creditcard  # noqa: E402
+from dq_anomaly.data.defect_injector import inject_defects  # noqa: E402
+from dq_anomaly.data.erp_generator import generate_erp_dataset  # noqa: E402
+from dq_anomaly.data.loaders import load_creditcard_sample  # noqa: E402
 from dq_anomaly.pipeline import AuditConfig, audit_batch  # noqa: E402
 from dq_anomaly.quality.profile import load_profile  # noqa: E402
 
@@ -40,25 +41,23 @@ def get_bundle():
     return load_bundle() if bundle_available() else None
 
 
-@st.cache_data(show_spinner="Loading sample batch...")
-def load_sample(name: str) -> pd.DataFrame:
-    if name == "erp":
-        return pd.read_csv(PATHS.data_synthetic / "po_lines.csv", parse_dates=["delivery_date"])
-    if name == "erp_clean":
-        return pd.read_csv(PATHS.data_synthetic / "clean" / "po_lines.csv",
-                           parse_dates=["delivery_date"])
-    frame = load_creditcard()
-    return frame.sort_values("Time", kind="mergesort").tail(20_000).reset_index(drop=True)
+@st.cache_data(show_spinner="Generating the synthetic ERP extract...")
+def load_erp_tables(corrupted: bool) -> dict[str, pd.DataFrame]:
+    """Build the ERP extract in memory rather than reading it from disk.
+
+    Generation takes well under a second, so the hosted demo does not need the
+    CSVs to be committed - and the seeds guarantee it is the same extract the
+    metrics in the README were measured on.
+    """
+    tables = generate_erp_dataset(seed=42)
+    if corrupted:
+        tables, _ = inject_defects(tables, seed=1337)
+    return tables
 
 
-@st.cache_data(show_spinner="Loading reference tables...")
-def load_references() -> dict[str, pd.DataFrame]:
-    references = {}
-    for name in ("materials", "purchase_orders", "vendors"):
-        path = PATHS.data_synthetic / f"{name}.csv"
-        if path.exists():
-            references[name] = pd.read_csv(path)
-    return references
+@st.cache_data(show_spinner="Loading transactions...")
+def load_creditcard_batch() -> pd.DataFrame:
+    return load_creditcard_sample()
 
 
 @st.cache_data(show_spinner="Reading uploaded file...")
@@ -119,17 +118,17 @@ table_name = "uploaded_batch"
 label_column = None
 
 if source.startswith("ERP"):
-    clean = "clean" in source
-    frame = load_sample("erp_clean" if clean else "erp")
+    tables = load_erp_tables(corrupted="corrupted" in source)
+    frame = tables["po_lines"]
+    references = {name: tables[name] for name in ("materials", "purchase_orders", "vendors")}
     profile = load_profile("profile_erp_po_lines.yaml")
-    references = load_references()
     table_name = "erp_po_lines"
 elif source == "Credit card transactions":
     try:
-        frame = load_sample("creditcard")
+        frame = load_creditcard_batch()
     except FileNotFoundError:
-        st.error("The credit card dataset is not downloaded yet. "
-                 "Run `python scripts/01_download_data.py`.")
+        st.error("No transaction data available. Run "
+                 "`python scripts/01_download_data.py` to fetch it.")
         st.stop()
     profile = load_profile("profile_creditcard.yaml")
     table_name = "creditcard_transactions"
@@ -151,12 +150,13 @@ if len(frame) > 200_000:
 @st.cache_data(show_spinner="Auditing batch...")
 def run_audit(
     frame: pd.DataFrame, table_name: str, profile_name: str | None, budget: float,
-    use_model: bool, max_issues: int, label_column: str | None, has_references: bool,
+    use_model: bool, max_issues: int, label_column: str | None,
+    reference_tables: dict[str, pd.DataFrame] | None,
 ):
     return audit_batch(
         frame,
         profile=load_profile(profile_name) if profile_name else None,
-        reference_tables=load_references() if has_references else None,
+        reference_tables=reference_tables,
         bundle=get_bundle(),
         table_name=table_name,
         label_column=label_column,
@@ -171,7 +171,7 @@ profile_file = {
 }.get(table_name)
 
 result = run_audit(frame, table_name, profile_file, review_budget, use_model,
-                   max_issues, label_column, references is not None)
+                   max_issues, label_column, references)
 report = result.report
 quality = result.quality
 
