@@ -1,5 +1,8 @@
+# Do not set `server.port` here. A hosting platform assigns the port and health
+# checks the one it expects; pinning it makes the app bind elsewhere and the
+# platform declares it dead. For a local port, pass it on the command line
+# instead: `make app PORT=8502`.
 [server]
-port = 8502
 maxUploadSize = 100
 
 [theme]
